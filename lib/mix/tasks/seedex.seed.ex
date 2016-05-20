@@ -8,6 +8,7 @@ defmodule Mix.Tasks.Seedex.Seed do
   ## Options
 
     * `--debug`      - Enable debug logs
+    * `--quiet`      - Disable all logs
     * `--env`        - Override `MIX_ENV`. Useful to add production seeds in staging env.
     * `--seeds-path` - Override the settings with the same name from mix config, defaults to `priv/repo/seeds`
 
@@ -20,7 +21,7 @@ defmodule Mix.Tasks.Seedex.Seed do
 
   @doc false
   def run(args) do
-    {opts, _, _} = OptionParser.parse(args, switches: [env: :string, seeds_path: :string, debug: :boolean])
+    {opts, _, _} = OptionParser.parse(args, switches: [env: :string, seeds_path: :string, debug: :boolean, quiet: :boolean])
 
     if opts[:debug] do
       Logger.configure(level: :debug)
@@ -42,6 +43,10 @@ defmodule Mix.Tasks.Seedex.Seed do
     seeds_path
     |> seeds_files(env)
     |> Enum.each(&Code.load_file(&1))
+
+    unless opts[:quiet] do
+      Mix.shell.info("Database has been populated with seeds from #{seeds_path}")
+    end
   end
 
   defp seeds_files(path, env) do
