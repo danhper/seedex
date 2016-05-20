@@ -9,7 +9,7 @@ defmodule Mix.Tasks.Seedex.Seed do
 
     * `--debug`      - Enable debug logs
     * `--env`        - Override `MIX_ENV`. Useful to add production seeds in staging env.
-    * `--seeds-path` - Override the settings with the same name from mix config, defaults to `priv/seeds`
+    * `--seeds-path` - Override the settings with the same name from mix config, defaults to `priv/repo/seeds`
 
   ## Examples
 
@@ -30,7 +30,7 @@ defmodule Mix.Tasks.Seedex.Seed do
 
     unless File.dir?(seeds_path) do
       Mix.raise """
-      seeeds_path is not a directory, create priv/seeds or configure in :seedex configuration
+      seeeds_path is not a directory, create priv/repo/seeds or configure in :seedex configuration
       """
     end
 
@@ -51,6 +51,6 @@ defmodule Mix.Tasks.Seedex.Seed do
   end
 
   defp default_path do
-    Application.get_env(:seedex, :seeds_path, "priv/seeds")
+    Application.get_env(:seedex, :seeds_path, "priv/repo/seeds")
   end
 end

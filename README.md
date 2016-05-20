@@ -17,7 +17,7 @@ Add `seedex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:seedex, "~> 0.1.0"}]
+  [{:seedex, "~> 0.1.1"}]
 end
 ```
 
@@ -28,10 +28,10 @@ First, you need to configure `seedex` to use your repository:
 ```elixir
 config :seedex,
   repo: YourApp.Repo,
-  seeds_path: "priv/seeds" # not required, but can be used to customize seeds path
+  seeds_path: "priv/repo/seeds" # not required, but can be used to customize seeds path
 ```
 
-Then, you just need to add files under the `seeds_path`, which defaults to `priv/seeds`.
+Then, you just need to add files under the `seeds_path`, which defaults to `priv/repo/seeds`.
 All files matching `seeds_path/*.exs` and `seeds_path/MIX_ENV/*.exs` if it exists will be read.
 To insert the data, you need to run
 
@@ -40,7 +40,7 @@ mix seedex.seed
 ```
 
 However, the files are really just plain Elixir with nothing special, so you could
-just use `mix run priv/seeds/my_seed.exs`, if you needed to.
+just use `mix run priv/repo/seeds/my_seed.exs`, if you needed to.
 
 ### Sample seed file
 
