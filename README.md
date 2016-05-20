@@ -17,7 +17,7 @@ Add `seedex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:seedex, "~> 0.1.1"}]
+  [{:seedex, "~> 0.1.2"}]
 end
 ```
 
