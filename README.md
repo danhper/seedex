@@ -39,6 +39,7 @@ To insert the data, you need to run
 mix seedex.seed
 ```
 
+Files are loaded in alphabetic order, independently of the directory they are in.
 However, the files are really just plain Elixir with nothing special, so you could
 just use `mix run priv/repo/seeds/my_seed.exs`, if you needed to.
 

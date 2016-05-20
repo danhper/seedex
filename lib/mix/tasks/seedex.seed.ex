@@ -5,6 +5,9 @@ defmodule Mix.Tasks.Seedex.Seed do
   @moduledoc """
   Mix task to populate database with seed data
 
+  The task will load all the files under `seeds_path` and `seeds_path/MIX_ENV` if it exists,
+  and will run them sequentially in alphabetic order, regardless of which directory they come from.
+
   ## Options
 
     * `--debug`      - Enable debug logs
