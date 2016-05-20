@@ -20,10 +20,15 @@ defmodule Mix.Tasks.Seedex.Seed do
 
   @doc false
   def run(args) do
-    {opts, _, _} = OptionParser.parse(args, switches: [env: :string, seeds_path: :string, verbose: :boolean])
-    if opts[:verbose] do
+    {opts, _, _} = OptionParser.parse(args, switches: [env: :string, seeds_path: :string, debug: :boolean])
+
+    if opts[:debug] do
       Logger.configure(level: :debug)
+    else
+      Logger.configure(level: :info)
     end
+
+    Mix.Task.run("app.start", [])
 
     seeds_path = Keyword.get(opts, :seeds_path, default_path)
     env = Keyword.get(opts, :env, to_string(Mix.env))
@@ -36,7 +41,7 @@ defmodule Mix.Tasks.Seedex.Seed do
 
     seeds_path
     |> seeds_files(env)
-    |> Enum.each(&Code.eval_file(&1))
+    |> Enum.each(&Code.load_file(&1))
   end
 
   defp seeds_files(path, env) do
