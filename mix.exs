@@ -12,8 +12,8 @@ defmodule Seedex.Mixfile do
      elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     package: package,
-     deps: deps,
+     package: package(),
+     deps: deps(),
      docs: [source_ref: "#{@version}", extras: ["README.md"], main: "readme"]]
   end
 
@@ -29,10 +29,10 @@ defmodule Seedex.Mixfile do
   defp elixirc_paths(_all),  do: ["lib"]
 
   defp deps do
-    [{:ecto, "~> 1.1 or ~> 2.0.0-rc.5"},
-     {:postgrex, "~> 0.11.1", only: [:test]},
-     {:earmark,   "~> 0.2", only: :docs},
-     {:ex_doc,    "~> 0.11", only: :docs}]
+    [{:ecto, "~> 1.1 or ~> 2.1"},
+     {:postgrex, "~> 0.13", only: [:test]},
+     {:earmark,   "~> 1.0", only: :docs},
+     {:ex_doc,    "~> 0.14", only: :docs}]
   end
 
   defp package do
