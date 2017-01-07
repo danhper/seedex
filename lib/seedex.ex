@@ -64,7 +64,7 @@ defmodule Seedex do
         update_record(record, existing)
       !existing ->
         Logger.debug("Inserting record #{inspect(record)}")
-        repo.insert(record)
+        repo().insert(record)
       true ->
         :ok
     end
@@ -75,7 +75,7 @@ defmodule Seedex do
       [] ->
         nil
       query ->
-        repo.get_by(module, query)
+        repo().get_by(module, query)
     end
   end
 
@@ -88,7 +88,7 @@ defmodule Seedex do
   defp update_record(record, existing) do
     changeset = make_changeset(record, existing)
     Logger.debug("Updating #{inspect(record)} with changes: #{inspect(changeset.changes)}")
-    repo.update!(changeset)
+    repo().update!(changeset)
   end
 
   defp make_changeset(record, existing) do

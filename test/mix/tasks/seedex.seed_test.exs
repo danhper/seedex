@@ -1,8 +1,10 @@
 defmodule Mix.Tasks.Seedex.SeedTest do
   use Seedex.Case
 
+  import ExUnit.CaptureIO
+
   test "seed task" do
-    Mix.Tasks.Seedex.Seed.run([])
+    capture_io(fn -> Mix.Tasks.Seedex.Seed.run([]) end)
 
     assert %Group{name: "admin"} = Repo.get!(Group, 1)
     assert %User{group_id: 1} = Repo.get_by!(User, name: "Daniel")
@@ -15,7 +17,7 @@ defmodule Mix.Tasks.Seedex.SeedTest do
   test "seed task with update" do
     Repo.insert!(%Group{id: 2, name: "user"})
     Repo.insert!(%User{name: "Daniel", group_id: 2})
-    Mix.Tasks.Seedex.Seed.run([])
+    capture_io(fn -> Mix.Tasks.Seedex.Seed.run([]) end)
 
     assert %Group{name: "admin"} = Repo.get!(Group, 1)
     assert %User{group_id: 1} = Repo.get_by!(User, name: "Daniel")

@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Seedex.Seed do
 
     Mix.Task.run("app.start", [])
 
-    seeds_path = Keyword.get(opts, :seeds_path, default_path)
+    seeds_path = Keyword.get(opts, :seeds_path, default_path())
     env = Keyword.get(opts, :env, to_string(Mix.env))
 
     unless File.dir?(seeds_path) do
