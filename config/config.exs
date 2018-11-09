@@ -6,7 +6,6 @@ config :seedex,
   seeds_path: Path.join(__DIR__, "../test/seeds")
 
 config :seedex, Seedex.Repo,
-  adapter: Ecto.Adapters.Postgres,
   database: "seedex_test",
   username: "postgres",
   hostname: "localhost",

@@ -1,6 +1,6 @@
 # Seedex
 
-[![Build Status](https://travis-ci.org/tuvistavie/seedex.svg?branch=master)](https://travis-ci.org/tuvistavie/seedex)
+[![Build Status](https://travis-ci.org/danhper/seedex.svg?branch=master)](https://travis-ci.org/danhper/seedex)
 [![Hex.pm](https://img.shields.io/hexpm/v/seedex.svg)](https://hex.pm/packages/seedex)
 
 Seedex is a library for Ecto to easily populate your DB with seed data.
