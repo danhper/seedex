@@ -98,7 +98,7 @@ defmodule Seedex do
         changeset
       {_key, nil}, changeset ->
         changeset
-      {key, _value}, changeset when key in ~w(__meta__) ->
+      {key, _value}, changeset when key in ["__meta__", :__meta__] ->
         changeset
       {key, %Ecto.Association.BelongsTo{} = assoc}, changeset ->
         Ecto.Changeset.put_assoc(changeset, key, assoc)
