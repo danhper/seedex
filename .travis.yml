@@ -1,5 +1,8 @@
 language: elixir
 
+services:
+  - postgresql
+
 elixir:
   - 1.6
   - 1.7
