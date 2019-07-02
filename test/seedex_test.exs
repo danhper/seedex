@@ -18,6 +18,21 @@ defmodule SeedexTest do
     assert %User{age: 26} = Repo.get_by!(User, name: "Daniel")
   end
 
+  test "seed inserts data and applies function" do
+    seed User, [%{name: "Daniel"}, %{name: "Tom"}], fn user ->
+      user |> Map.put(:age, 26)
+    end
+    assert %User{age: 26} = Repo.get_by!(User, name: "Daniel")
+    assert %User{age: 26} = Repo.get_by!(User, name: "Tom")
+  end
+
+  test "seed_once inserts data and applies function" do
+    seed_once User, [:name], [%{name: "Daniel"}, %{name: "Daniel"}], fn user ->
+      user |> Map.put(:age, 26)
+    end
+    assert %User{age: 26} = Repo.get_by!(User, name: "Daniel")
+  end
+
   test "seed updates existing records" do
     Repo.insert!(%User{name: "Daniel", age: 26})
     seed User, [:name], [%{name: "Daniel", age: 27}]

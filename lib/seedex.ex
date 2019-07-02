@@ -12,9 +12,11 @@ defmodule Seedex do
 
     * `module` - The module containing the Ecto schema.
     * `contraints` - The fields used to idenfity a record. The record will be updated
-      if a record with matching fields already exist.
-    * `data` - The data to insert. It can either be a list of maps, each containing a record
-      or a function which takes a `struct` as input and output.
+      if a record with matching fields already exist. The default value is `[:id]`
+    * `data` - The data to insert. It should be a list of maps. If it is not passed,
+      a single record will be created using the function passed.
+    * `process` - A function to post-process each created record. It is required
+      only if `data` is omitted.
 
   ## Examples
 
@@ -32,27 +34,45 @@ defmodule Seedex do
     ]
     ```
   """
-  @spec seed(module :: atom, constraints :: [atom], data :: (() -> :ok) | [map]) :: :ok
-  def seed(module, constraints \\ [:id], data) do
-    do_seed(module, constraints, data, update: true)
+  @spec seed(module :: atom, constraints :: [atom], data :: [map], process :: (struct -> struct)) :: :ok
+  def seed(module, constraints \\ [:id], data \\ [], process \\ nil) do
+    dispatch_seed(module, constraints, data, process, update: true)
   end
 
   @doc """
   Same as `seed/3` but does not update the record if it already exists
   """
-  @spec seed_once(module :: atom, constraints :: [atom], data :: (() -> :ok) | [map]) :: :ok
-  def seed_once(module, constraints \\ [:id], data) do
-    do_seed(module, constraints, data, update: false)
+  @spec seed_once(module :: atom, constraints :: [atom], data :: (struct -> struct) | [map], process :: (struct -> struct)) :: :ok
+  def seed_once(module, constraints \\ [:id], data \\ [], process \\ nil) do
+    dispatch_seed(module, constraints, data, process, update: false)
   end
 
-  defp do_seed(module, constraints, func, opts) when is_function(func, 1) do
-    record = func.(struct(module, %{}))
-    insert_seed(module, record, constraints, opts)
-  end
+  defp identity(x), do: x
 
-  defp do_seed(module, constraints, data, opts) when is_list(data) do
+  # arguments were all pased
+  defp dispatch_seed(module, constraints, data, func, opts) when is_function(func, 1),
+    do: do_seed(module, constraints, data, func, opts)
+  # 3 arguments passed
+  defp dispatch_seed(module, [h | t], data, nil, opts) when is_atom(h) and is_list(data),
+    do: do_seed(module, [h | t], data, &identity/1, opts)
+  defp dispatch_seed(module, [h | t], func, nil, opts) when is_atom(h) and is_function(func, 1),
+    do: do_seed(module, [h | t], [], func, opts)
+  defp dispatch_seed(module, [h | t], func, nil, opts) when is_map(h) and is_function(func, 1),
+    do: do_seed(module, [:id], [h | t], func, opts)
+  # 2 arguments passed
+  defp dispatch_seed(module, func, [], nil, opts) when is_function(func, 1),
+    do: do_seed(module, [:id], [], func, opts)
+  defp dispatch_seed(module, [h | t], [], nil, opts) when is_map(h),
+    do: do_seed(module, [:id], [h | t], &identity/1, opts)
+  defp dispatch_seed(_module, _constraints, _data, _func, _opts),
+    do: raise ArgumentError, "invalid arguments to seed"
+
+  defp do_seed(module, constraints, [], process, opts), do:
+    do_seed(module, constraints, [%{}], process, opts)
+
+  defp do_seed(module, constraints, data, process, opts) do
     Enum.each data, fn record ->
-      record = struct(module, record)
+      record = struct(module, record) |> process.()
       insert_seed(module, record, constraints, opts)
     end
   end
