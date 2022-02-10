@@ -34,7 +34,8 @@ defmodule Seedex do
     ]
     ```
   """
-  @spec seed(module :: atom, constraints :: [atom], data :: [map], process :: (struct -> struct)) :: :ok
+  @spec seed(module :: atom, constraints :: [atom], data :: [map], process :: (struct -> struct)) ::
+          :ok
   def seed(module, constraints \\ [:id], data \\ [], process \\ nil) do
     dispatch_seed(module, constraints, data, process, update: true)
   end
@@ -42,7 +43,12 @@ defmodule Seedex do
   @doc """
   Same as `seed/3` but does not update the record if it already exists
   """
-  @spec seed_once(module :: atom, constraints :: [atom], data :: (struct -> struct) | [map], process :: (struct -> struct)) :: :ok
+  @spec seed_once(
+          module :: atom,
+          constraints :: [atom],
+          data :: (struct -> struct) | [map],
+          process :: (struct -> struct)
+        ) :: :ok
   def seed_once(module, constraints \\ [:id], data \\ [], process \\ nil) do
     dispatch_seed(module, constraints, data, process, update: false)
   end
@@ -52,39 +58,48 @@ defmodule Seedex do
   # arguments were all pased
   defp dispatch_seed(module, constraints, data, func, opts) when is_function(func, 1),
     do: do_seed(module, constraints, data, func, opts)
+
   # 3 arguments passed
   defp dispatch_seed(module, [h | t], data, nil, opts) when is_atom(h) and is_list(data),
     do: do_seed(module, [h | t], data, &identity/1, opts)
+
   defp dispatch_seed(module, [h | t], func, nil, opts) when is_atom(h) and is_function(func, 1),
     do: do_seed(module, [h | t], [], func, opts)
+
   defp dispatch_seed(module, [h | t], func, nil, opts) when is_map(h) and is_function(func, 1),
     do: do_seed(module, [:id], [h | t], func, opts)
+
   # 2 arguments passed
   defp dispatch_seed(module, func, [], nil, opts) when is_function(func, 1),
     do: do_seed(module, [:id], [], func, opts)
+
   defp dispatch_seed(module, [h | t], [], nil, opts) when is_map(h),
     do: do_seed(module, [:id], [h | t], &identity/1, opts)
-  defp dispatch_seed(_module, _constraints, _data, _func, _opts),
-    do: raise ArgumentError, "invalid arguments to seed"
 
-  defp do_seed(module, constraints, [], process, opts), do:
-    do_seed(module, constraints, [%{}], process, opts)
+  defp dispatch_seed(_module, _constraints, _data, _func, _opts),
+    do: raise(ArgumentError, "invalid arguments to seed")
+
+  defp do_seed(module, constraints, [], process, opts),
+    do: do_seed(module, constraints, [%{}], process, opts)
 
   defp do_seed(module, constraints, data, process, opts) do
-    Enum.each data, fn record ->
+    Enum.each(data, fn record ->
       record = struct(module, record) |> process.()
       insert_seed(module, record, constraints, opts)
-    end
+    end)
   end
 
   defp insert_seed(module, record, constraints, opts) do
     existing = fetch_record(module, record, constraints)
+
     cond do
       existing && opts[:update] ->
         update_record(record, existing)
+
       !existing ->
         Logger.debug("Inserting record #{inspect(record)}")
         repo().insert(record)
+
       true ->
         :ok
     end
@@ -94,6 +109,7 @@ defmodule Seedex do
     case make_query(record, constraints) do
       [] ->
         nil
+
       query ->
         repo().get_by(module, query)
     end
@@ -101,7 +117,7 @@ defmodule Seedex do
 
   defp make_query(record, constraints) do
     constraints
-    |> Enum.map(& {&1, Map.fetch!(record, &1)})
+    |> Enum.map(&{&1, Map.fetch!(record, &1)})
     |> Enum.reject(fn {_k, v} -> is_nil(v) end)
   end
 
@@ -113,18 +129,23 @@ defmodule Seedex do
 
   defp make_changeset(record, existing) do
     {changeset, changes} = {Ecto.Changeset.change(existing), Map.from_struct(record)}
-    Enum.reduce changes, changeset, fn
+
+    Enum.reduce(changes, changeset, fn
       {_key, %Ecto.Association.NotLoaded{}}, changeset ->
         changeset
+
       {_key, nil}, changeset ->
         changeset
+
       {key, _value}, changeset when key in ["__meta__", :__meta__] ->
         changeset
+
       {key, %Ecto.Association.BelongsTo{} = assoc}, changeset ->
         Ecto.Changeset.put_assoc(changeset, key, assoc)
+
       {key, value}, changeset ->
         Ecto.Changeset.put_change(changeset, key, value)
-    end
+    end)
   end
 
   defp repo do

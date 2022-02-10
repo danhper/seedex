@@ -24,7 +24,10 @@ defmodule Mix.Tasks.Seedex.Seed do
 
   @doc false
   def run(args) do
-    {opts, _, _} = OptionParser.parse(args, switches: [env: :string, seeds_path: :string, debug: :boolean, quiet: :boolean])
+    {opts, _, _} =
+      OptionParser.parse(args,
+        switches: [env: :string, seeds_path: :string, debug: :boolean, quiet: :boolean]
+      )
 
     if opts[:debug] do
       Logger.configure(level: :debug)
@@ -35,20 +38,20 @@ defmodule Mix.Tasks.Seedex.Seed do
     Mix.Task.run("app.start", [])
 
     seeds_path = Keyword.get(opts, :seeds_path, default_path())
-    env = Keyword.get(opts, :env, to_string(Mix.env))
+    env = Keyword.get(opts, :env, to_string(Mix.env()))
 
     unless File.dir?(seeds_path) do
-      Mix.raise """
+      Mix.raise("""
       seeeds_path is not a directory, create priv/repo/seeds or configure in :seedex configuration
-      """
+      """)
     end
 
     seeds_path
     |> seeds_files(env)
-    |> Enum.each(&Code.load_file(&1))
+    |> Enum.each(&Code.compile_file(&1))
 
     unless opts[:quiet] do
-      Mix.shell.info("Database has been populated with seeds from #{seeds_path}")
+      Mix.shell().info("Database has been populated with seeds from #{seeds_path}")
     end
   end
 
@@ -60,7 +63,7 @@ defmodule Mix.Tasks.Seedex.Seed do
   defp exs_files(path) do
     path
     |> Path.join("*.exs")
-    |> Path.wildcard
+    |> Path.wildcard()
   end
 
   defp default_path do
