@@ -17,9 +17,13 @@ Version `0.3.0` or lower:
 
 * Elixir ~> `1.11.x` or lower.
 
-Version `0.4.0` or higher:
+Version `0.4.0`:
 
-* Elixir ~> `1.13.x` or higher.
+* Elixir ~> `1.13.x`.
+
+Version `0.5.0` or higher:
+
+* Elixir ~> `1.14.x` or higher.
 
 ## Installation
 

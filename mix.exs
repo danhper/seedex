@@ -35,8 +35,8 @@ defmodule Seedex.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 3.7.1"},
-      {:ecto_sql, "~> 3.7.2"},
+      {:ecto, "~> 3.9"},
+      {:ecto_sql, "~> 3.9"},
       {:postgrex, "~> 0.16.1", only: [:test]},
       {:earmark, "~> 1.4.20", only: :docs},
       {:ex_doc, "~> 0.14", only: :docs}
