@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :seedex,
   ecto_repos: [Seedex.Repo],
@@ -8,6 +8,7 @@ config :seedex,
 config :seedex, Seedex.Repo,
   database: "seedex_test",
   username: "postgres",
+  password: "postgres",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 

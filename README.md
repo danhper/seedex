@@ -11,6 +11,20 @@ This is not meant to generate data for your tests, if this is what
 you need, checkout [ecto_fixtures](https://github.com/dockyard/ecto_fixtures) or
 [ex_machina](https://github.com/thoughtbot/ex_machina) instead.
 
+## Compatible versions
+
+Version `0.3.0` or lower:
+
+* Elixir ~> `1.11.x` or lower.
+
+Version `0.4.0`:
+
+* Elixir ~> `1.13.x`.
+
+Version `0.5.0` or higher:
+
+* Elixir ~> `1.14.x` or higher.
+
 ## Installation
 
 Add `seedex` to your list of dependencies in `mix.exs`:
