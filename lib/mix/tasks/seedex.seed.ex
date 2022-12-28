@@ -63,7 +63,7 @@ defmodule Mix.Tasks.Seedex.Seed do
     |> Path.wildcard
   end
 
-  defp default_path do
+  def default_path do
     Application.get_env(:seedex, :seeds_path, "priv/repo/seeds")
   end
 end
