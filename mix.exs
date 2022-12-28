@@ -19,7 +19,8 @@ defmodule Seedex.Mixfile do
 
   def application do
     [applications: applications(Mix.env),
-     description: 'Seed data generation for Ecto']
+     description: 'Seed data generation for Ecto',
+     extra_applications: [:eex]]
   end
 
   defp applications(:test), do: applications(:all) ++ [:ecto, :postgrex]
