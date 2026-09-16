@@ -22,4 +22,11 @@ defmodule Mix.Tasks.Seedex.SeedTest do
     assert %Group{name: "admin"} = Repo.get!(Group, 1)
     assert %User{group_id: 1} = Repo.get_by!(User, name: "Daniel")
   end
+
+  test "seed files can be evaluated repeatedly" do
+    capture_io(fn -> Mix.Tasks.Seedex.Seed.run([]) end)
+    capture_io(fn -> Mix.Tasks.Seedex.Seed.run([]) end)
+    assert Repo.aggregate(Group, :count) == 2
+    assert %User{group_id: 1} = Repo.get_by!(User, name: "Daniel")
+  end
 end

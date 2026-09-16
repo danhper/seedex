@@ -17,7 +17,7 @@ Add `seedex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:seedex, "~> 0.3.0"}]
+  [{:seedex, "~> 0.4.0"}]
 end
 ```
 
@@ -67,3 +67,18 @@ seed User, [:name], [
 ```
 
 Checkout the [documentation](https://hexdocs.pm/seedex/Seedex.html) for more info.
+
+## Development
+
+Seedex 0.4 requires Elixir 1.15 or newer and Ecto 3.13 or newer. The
+`.tool-versions` file pins the current Elixir 1.20 / Erlang 29 toolchain.
+Tests require PostgreSQL and default to `postgres` on localhost, with the
+`seedex_test` database. Set `PGHOST` and `PGPORT` to use another server.
+
+```sh
+mise install
+mise exec -- mix deps.get
+mise exec -- mix test
+```
+
+Version 0.4 also raises on failed seed inserts instead of silently ignoring errors.
